@@ -1,0 +1,23 @@
+{
+  "name": "bamazon",
+  "version": "0.0.1",
+  "description": "",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Meggin/bamazon.git"
+  },
+  "author": "Meggin Kearney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Meggin/bamazon/issues"
+  },
+  "homepage": "https://github.com/Meggin/bamazon#readme",
+  "dependencies": {
+    "inquirer": "^3.0.6",
+    "mysql": "^2.13.0"
+  }
+}
