@@ -109,10 +109,8 @@ var completePurchase = function(availableStock, price, productSales, productDepa
 		console.log("Yay, your purchase is complete.");
 		console.log("You're mythical payment has been received in the amount of : " + totalPrice);
 		updateDepartmentRevenue(updatedProductSales, productDepartment);
+		// Displays products so user can make a new selection.
 	});
-
-	// Displays products so user can make a new selection.
-	displayProducts();
 };
 
 // Update total sales for department after completed purchase.
@@ -140,6 +138,7 @@ var completeDepartmentSalesUpdate = function(updatedDepartmentSales, productDepa
 		department_name: productDepartment
 	}], function(err, res) {
 		console.log("New department sales: " + updatedDepartmentSales);
+		displayProducts();
 	});
 };
 
