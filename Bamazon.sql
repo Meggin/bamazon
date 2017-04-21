@@ -7,7 +7,7 @@ CREATE TABLE products (
   product_name VARCHAR(100) NOT NULL,
   department_name VARCHAR(50) NULL,
   price DECIMAL(7,2) NOT NULL,
-  stock_quantity INT NOT NULL,
+  stock_quantity INT NOT NULL DEFAULT '1',
   PRIMARY KEY (item_id)
 );
 Select * From products;
@@ -15,8 +15,8 @@ Select * From products;
 CREATE TABLE departments (
   department_id INT NOT NULL AUTO_INCREMENT,
   department_name VARCHAR(100) NOT NULL,
-  over_head_costs DECIMAL(7,2) NOT NULL,
-  total_sales DECIMAL(7,2) NOT NULL,
+  over_head_costs DECIMAL(7,2) NOT NULL DEFAULT '0.00',
+  total_sales DECIMAL(7,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (department_id)
 );
 Select * From departments;
