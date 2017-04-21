@@ -61,17 +61,18 @@ var requestProduct = function() {
 	}]).then(function(answer) {
 
 		// Query database for selected product.
-		var query = "Select stock_quantity, price, product_sales FROM products WHERE ?";
+		var query = "Select stock_quantity, price, product_sales, department_name FROM products WHERE ?";
 		connection.query(query, { item_id: answer.productID}, function(err, res) {
 			var available_stock = res[0].stock_quantity;
 			var price_per_unit = res[0].price;
 			var productSales = res[0].product_sales;
+			var productDepartment = res[0].department_name;
 
 			// Check there's enough stock to process user's request.
 			if (available_stock >= answer.productUnits) {
 
 				// Process user's request passing in data to complete purchase.
-				completePurchase(available_stock, price_per_unit, productSales, answer.productID, answer.productUnits);
+				completePurchase(available_stock, price_per_unit, productSales, productDepartment, answer.productID, answer.productUnits);
 			} else {
 
 				// Tell user there isn't enough stock left.
@@ -86,7 +87,7 @@ var requestProduct = function() {
 
 
 // Complete user's request to purchase product.
-var completePurchase = function(availableStock, price, productSales, selectedProductID, selectedProductUnits) {
+var completePurchase = function(availableStock, price, productSales, productDepartment, selectedProductID, selectedProductUnits) {
 	
 	// This will be the updated stock quantity once purchase complete.
 	var updatedStockQuantity = availableStock - selectedProductUnits;
@@ -95,8 +96,6 @@ var completePurchase = function(availableStock, price, productSales, selectedPro
 	var totalPrice = price * selectedProductUnits;
 
 	var updatedProductSales = parseInt(productSales) + parseInt(totalPrice);
-
-	console.log("Updated product sales needs to be removed!" + updatedProductSales);
 	
 	// Update stock quantity based on user's purchase.
 	var query = "UPDATE products SET ? WHERE ?";
@@ -109,9 +108,38 @@ var completePurchase = function(availableStock, price, productSales, selectedPro
 		// Tell user purchase a success, and display the total price for that purchase.
 		console.log("Yay, your purchase is complete.");
 		console.log("You're mythical payment has been received in the amount of : " + totalPrice);
+		updateDepartmentRevenue(updatedProductSales, productDepartment);
 	});
 
 	// Displays products so user can make a new selection.
 	displayProducts();
+};
+
+// Update total sales for department after completed purchase.
+var updateDepartmentRevenue = function(updatedProductSales, productDepartment) {
+	console.log('Getting product sales: ' + updatedProductSales);
+	console.log('Getting product department: ' + productDepartment);
+
+	// Query database for selected product.
+	var query = "Select total_sales FROM departments WHERE ?";
+	connection.query(query, { department_name: productDepartment}, function(err, res) {
+		var departmentSales = res[0].total_sales;
+
+		var updatedDepartmentSales = parseInt(departmentSales) + parseInt(updatedProductSales);
+
+		completeDepartmentSalesUpdate(updatedDepartmentSales, productDepartment);
+	});
+};
+
+var completeDepartmentSalesUpdate = function(updatedDepartmentSales, productDepartment) {
+
+	var query = "UPDATE departments SET ? WHERE ?";
+	connection.query(query, [{
+		total_sales: updatedDepartmentSales
+	}, {
+		department_name: productDepartment
+	}], function(err, res) {
+		console.log("New department sales: " + updatedDepartmentSales);
+	});
 };
 

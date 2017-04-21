@@ -157,13 +157,43 @@ var addProduct = function() {
 			department_name: answer.department_name,
 			price: answer.price,
 			stock_quantity: answer.stock_quantity
-		}, function(err) {
+		}, function(err, res) {
 			if (err) {
 				throw err;
 			} else {
 				console.log("Your product was added successfully!");
-				selectAction();
+				checkIfDepartmentExists(answer.department_name);
 			}
 		});
 	});
+};
+
+var checkIfDepartmentExists = function(departmentName) {
+
+	var query = "Select department_name FROM departments";
+	connection.query(query, function(err, res) {
+		if (err) throw err;
+		for (var i = 0; i < res.length; i++) {
+			if (departmentName === res[i].department_name) {
+				console.log("This department already exists so no need to add it: " + departmentName);
+				selectAction();
+			}
+		}
+		addNewDepartment(departmentName);
+	});
+};
+
+var addNewDepartment = function(departmentName) {
+	console.log('We will add this new department: ' + departmentName);
+
+	connection.query("INSERT INTO departments SET ?", {
+			department_name: departmentName
+		}, function(err, res) {
+			if (err) {
+				throw err;
+			} else {
+				console.log("New department was added successfully!");
+				selectAction();
+			}
+		});
 };
