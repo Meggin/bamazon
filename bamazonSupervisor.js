@@ -1,0 +1,84 @@
+// Supervisor
+
+// Required node modules.
+var mysql = require("mysql");
+var inquirer = require("inquirer");
+var table = require("console.table");
+
+// Connects to the database.
+var connection = mysql.createConnection({
+  host: "localhost",
+  port: 3306,
+  // Your username
+  user: "root",
+  // Your password
+  password: "",
+  database: "Bamazon_db"
+});
+
+// If connection doesn't work, throws error, else...
+connection.connect(function(err) {
+  if (err) throw err;
+
+  // Displays list of available products.
+  selectAction();
+
+});
+
+var selectAction = function() {
+	inquirer.prompt([
+	{
+		type: 'list',
+		name: 'action',
+		message: 'What would you like to do?',
+		choices: [
+			"View Product Sales by Department",
+			"Create New Department"
+		]
+	}
+	]).then(function(answer) {
+
+		switch (answer.action) {
+		    case "View Product Sales by Department":
+		    	viewDepartmentSales();
+		      	break;
+
+		    case "Create New Department":
+		    	createDepartment();
+		      	break;
+
+		}
+	});
+};
+
+var viewDepartmentSales = function() {
+	var query = "Select department_id AS department_id, department_name AS department_name, over_head_costs AS over_head_costs, total_sales AS total_sales, (total_sales - over_head_costs) AS total_profit FROM departments";
+	connection.query(query, function(err, res) {
+		console.table(res);
+		selectAction();
+	});
+};
+
+var createDepartment = function() {
+		inquirer.prompt([{
+		name: "department_name",
+		type: "input",
+		message: "What is the new department name?"
+	}, {
+		name: "over_head_costs",
+		type: "input",
+		message: "What are the overhead costs for this department?"
+	}]).then(function(answer) {
+		connection.query("INSERT INTO departments SET ?", {
+			department_name: answer.department_name,
+			over_head_costs: answer.over_head_costs
+		}, function(err, res) {
+			if (err) {
+				throw err;
+			} else {
+				console.log("Your department was added successfully!");
+				selectAction();
+			}
+		});
+	});
+};
