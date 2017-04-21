@@ -100,18 +100,44 @@ var addInventory = function() {
 			message: "How much stock would you like to add?"
 		}
 	]).then(function(answer) {
-		connection.query("UPDATE products SET ? WHERE ?", [{
-			stock_quantity: answer.stock
-		}, {
-			item_id: answer.product_ID
-		}], function (err, res) {
-			if (err) {
-				throw err
-			} else {
-				console.log("Stock has been updated! New stock quantity is: " + res.stock_quantity);
-				selectAction();
+
+		// This isn't entirely correct.
+		// I believe I will have to get the result first,
+		// As with ebay like example.
+		// Then create value for result with answer stock.
+		// Then do this secnod query!
+		connection.query("SELECT * FROM products", function(err, results) {
+			
+			var chosenItem;
+
+			for (var i = 0; i < results.length; i++) {
+				if (results[i].item_id === parseInt(answer.product_ID)) {
+					chosenItem = results[i];
+
+					console.log("Chosen item stock: " + chosenItem.stock_quantity);
+				}
 			}
+
+			var updatedStock = parseInt(chosenItem.stock_quantity) + parseInt(answer.stock);
+
+			console.log("Updated stock: " + updatedStock);
+
+			
+
+			connection.query("UPDATE products SET ? WHERE ?", [{
+				stock_quantity: updatedStock
+			}, {
+				item_id: answer.product_ID
+			}], function (err, res) {
+				if (err) {
+					throw err
+				} else {
+					selectAction();
+				}
+			});
+			
 		});
+
 	});
 };
 
