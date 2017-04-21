@@ -1,17 +1,19 @@
-// Supervisor
+// The superview module is part of bamazon.
+// Supervisors can view product sales for each department.
+// They can also add new departments.
 
 // Required node modules.
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var table = require("console.table");
 
-// Connects to the database.
+// Connects to database.
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
-  // Your username
+  // Root is default username.
   user: "root",
-  // Your password
+  // Password is empty string.
   password: "",
   database: "Bamazon_db"
 });
@@ -20,11 +22,12 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
   if (err) throw err;
 
-  // Displays list of available products.
+  // Lets supervisor pick action.
   selectAction();
 
 });
 
+// Supervisor selects to view product sales or create department.
 var selectAction = function() {
 	inquirer.prompt([
 	{
@@ -38,6 +41,7 @@ var selectAction = function() {
 	}
 	]).then(function(answer) {
 
+		// Functions called based on supervisor's selection.
 		switch (answer.action) {
 		    case "View Product Sales by Department":
 		    	viewDepartmentSales();
@@ -46,22 +50,28 @@ var selectAction = function() {
 		    case "Create New Department":
 		    	createDepartment();
 		      	break;
-
 		}
 	});
 };
 
+// Supervisor views product sales by department.
+// The total profit is calculated based on total sales minus overhead costs.
+// Total profit added to table using aliases.
 var viewDepartmentSales = function() {
-	var query = "Select department_id AS department_id, department_name AS department_name, over_head_costs AS over_head_costs, total_sales AS total_sales, (total_sales - over_head_costs) AS total_profit FROM departments";
+	var query = "Select department_id AS department_id, department_name AS department_name," +
+				"over_head_costs AS over_head_costs, total_sales AS total_sales," +
+				"(total_sales - over_head_costs) AS total_profit FROM departments";
 	connection.query(query, function(err, res) {
 
 		if (err) throw err;
-		
+
+		// Product sales displayed in neat table in console.
 		console.table(res);
 		selectAction();
 	});
 };
 
+//Supervisor creates new department.
 var createDepartment = function() {
 		inquirer.prompt([{
 		name: "department_name",
@@ -72,6 +82,8 @@ var createDepartment = function() {
 		type: "input",
 		message: "What are the overhead costs for this department?"
 	}]).then(function(answer) {
+
+		// Department added to departments database.
 		connection.query("INSERT INTO departments SET ?", {
 			department_name: answer.department_name,
 			over_head_costs: answer.over_head_costs
