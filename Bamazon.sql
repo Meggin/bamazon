@@ -21,4 +21,4 @@ CREATE TABLE departments (
 );
 Select * From departments;
 
-ALTER TABLE products ADD COLUMN product_sales DECIMAL(7,2);
+ALTER TABLE products ADD COLUMN product_sales DECIMAL(7,2) DEFAULT '0.00';

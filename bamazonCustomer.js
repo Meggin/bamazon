@@ -61,16 +61,17 @@ var requestProduct = function() {
 	}]).then(function(answer) {
 
 		// Query database for selected product.
-		var query = "Select stock_quantity, price FROM products WHERE ?";
+		var query = "Select stock_quantity, price, product_sales FROM products WHERE ?";
 		connection.query(query, { item_id: answer.productID}, function(err, res) {
 			var available_stock = res[0].stock_quantity;
 			var price_per_unit = res[0].price;
+			var productSales = res[0].product_sales;
 
 			// Check there's enough stock to process user's request.
 			if (available_stock >= answer.productUnits) {
 
 				// Process user's request passing in data to complete purchase.
-				completePurchase(available_stock, price_per_unit, answer.productID, answer.productUnits);
+				completePurchase(available_stock, price_per_unit, productSales, answer.productID, answer.productUnits);
 			} else {
 
 				// Tell user there isn't enough stock left.
@@ -85,24 +86,29 @@ var requestProduct = function() {
 
 
 // Complete user's request to purchase product.
-var completePurchase = function(availableStock, price, selectedProductID, selectedProductUnits) {
+var completePurchase = function(availableStock, price, productSales, selectedProductID, selectedProductUnits) {
 	
 	// This will be the updated stock quantity once purchase complete.
 	var updatedStockQuantity = availableStock - selectedProductUnits;
+
+	// Calculate total price for purchase based on unit price, and number of units.
+	var totalPrice = price * selectedProductUnits;
+
+	var updatedProductSales = parseInt(productSales) + parseInt(totalPrice);
+
+	console.log("Updated product sales needs to be removed!" + updatedProductSales);
 	
 	// Update stock quantity based on user's purchase.
 	var query = "UPDATE products SET ? WHERE ?";
 	connection.query(query, [{
-		stock_quantity: updatedStockQuantity
+		stock_quantity: updatedStockQuantity,
+		product_sales: updatedProductSales
 	}, {
 		item_id: selectedProductID
 	}], function(err, res) {
-
-		// Calculate total price for purchase based on unit price, and number of units.
-		var totalPrice = price * selectedProductUnits;
-
 		// Tell user purchase a success, and display the total price for that purchase.
-		console.log("Yay, your purchase is almost complete. You owe: " + totalPrice);
+		console.log("Yay, your purchase is complete.");
+		console.log("You're mythical payment has been received in the amount of : " + totalPrice);
 	});
 
 	// Displays products so user can make a new selection.
