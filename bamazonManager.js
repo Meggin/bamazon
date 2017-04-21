@@ -101,11 +101,6 @@ var addInventory = function() {
 		}
 	]).then(function(answer) {
 
-		// This isn't entirely correct.
-		// I believe I will have to get the result first,
-		// As with ebay like example.
-		// Then create value for result with answer stock.
-		// Then do this secnod query!
 		connection.query("SELECT * FROM products", function(err, results) {
 			
 			var chosenItem;
@@ -122,15 +117,13 @@ var addInventory = function() {
 
 			console.log("Updated stock: " + updatedStock);
 
-			
-
 			connection.query("UPDATE products SET ? WHERE ?", [{
 				stock_quantity: updatedStock
 			}, {
 				item_id: answer.product_ID
 			}], function (err, res) {
 				if (err) {
-					throw err
+					throw err;
 				} else {
 					selectAction();
 				}
@@ -142,6 +135,35 @@ var addInventory = function() {
 };
 
 var addProduct = function() {
-	console.log("Hey");
-	selectAction();
+	inquirer.prompt([{
+		name: "product_name",
+		type: "input",
+		message: "What is the product you would like to add?"
+	}, {
+		name: "department_name",
+		type: "input",
+		message: "What is the department for this product?"
+	}, {
+		name: "price",
+		type: "input",
+		message: "What is the price for the product, e.g. 25.00?"
+	}, {
+		name: "stock_quantity",
+		type: "input",
+		message: "How much stock do you have to start with?"
+	}]).then(function(answer) {
+		connection.query("INSERT INTO products SET ?", {
+			product_name: answer.product_name,
+			department_name: answer.department_name,
+			price: answer.price,
+			stock_quantity: answer.stock_quantity
+		}, function(err) {
+			if (err) {
+				throw err;
+			} else {
+				console.log("Your product was added successfully!");
+				selectAction();
+			}
+		});
+	});
 };
