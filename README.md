@@ -5,7 +5,7 @@ that many of us use on a regular basis.
 
 Here's a demonstration of how it works (screencast):
 
-[!Bamazon in action](http://img.youtube.com/vi/hF-m9R-r19s/0.jpg)](http://www.youtube.com/watch?v=hF-m9R-r19s "Bamazon")
+[Bamazon in action](http://img.youtube.com/vi/hF-m9R-r19s/0.jpg)](http://www.youtube.com/watch?v=hF-m9R-r19s)
 
 It uses some third-party node modules, has it's own modules, and connects to a mysql database to store and retrieve product and department information.
 
