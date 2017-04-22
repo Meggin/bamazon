@@ -3,9 +3,7 @@
 This is bamazon, the backend that is a very simple version of a very popular product
 that many of us use on a regular basis.
 
-Check out this screencast on youtube to see how it works: [bamazon on youtube](https://youtu.be/hF-m9R-r19s)
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/hF-m9R-r19s" frameborder="0" allowfullscreen></iframe>
+Check out this screencast on youtube to see how it works: [bamazon on youtube](https://youtu.be/hF-m9R-r19s).
 
 It uses some third-party node modules, has it's own modules, and connects to a mysql database to store and retrieve product and department information.
 
