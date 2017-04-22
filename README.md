@@ -5,7 +5,7 @@ that many of us use on a regular basis.
 
 Here's a demonstration of how it works (screencast):
 
-[Bamazon in action](http://img.youtube.com/vi/hF-m9R-r19s/0.jpg)](http://www.youtube.com/watch?v=hF-m9R-r19s)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hF-m9R-r19s" frameborder="0" allowfullscreen></iframe>
 
 It uses some third-party node modules, has it's own modules, and connects to a mysql database to store and retrieve product and department information.
 
