@@ -3,7 +3,7 @@
 This is bamazon, the backend that is a very simple version of a very popular product
 that many of us use on a regular basis.
 
-Here's a demonstration of how it works (screencast):
+Check out this screencast on youtube to see how it works: [bamazon on youtube](https://youtu.be/hF-m9R-r19s)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/hF-m9R-r19s" frameborder="0" allowfullscreen></iframe>
 
